@@ -1,25 +1,20 @@
 # Configuration file for OpenSSL
 
 [ req ]
-# Specifies the distinguished name details
 distinguished_name = req_distinguished_name
-# Specifies the extensions to add when creating a certificate request
 req_extensions     = req_ext
-# Disables prompting for input during certificate request generation
 prompt             = no
 
 [ req_distinguished_name ]
-# Distinguished name fields for the certificate
 C  = CA           # Country Name
 ST = Ontario      # State or Province Name
 L  = Toronto      # Locality Name
 O  = Laptop       # Organization Name
-CN = localhost    # Common Name
+CN = *.localhost  # Common Name (Wildcard for localhost)
 
 [ req_ext ]
-# Extensions for the certificate request and self-signed certificate
 subjectAltName = @alt_names
 
 [ alt_names ]
-# Subject Alternative Name (SAN) fields
-DNS.1 = localhost  # Alternative DNS name
+DNS.1 = localhost       # Primary domain
+DNS.2 = *.api.localhost     # Wildcard domain
