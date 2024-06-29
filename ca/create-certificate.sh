@@ -25,7 +25,6 @@ openssl x509 -req \
     -in ${SERVER_CSR_PATH} \
     -CA ${CERT_PATH} \
     -CAkey ${PRIVATE_KEY_PATH} \
-    -CAcreateserial \
     -out ${SERVER_CERT_PATH} \
     -days 365 \
     -sha256 \
