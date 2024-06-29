@@ -1,0 +1,13 @@
+spring:
+  ssl:
+    bundle:
+      pem:
+        server:
+          keystore:
+            certificate: "server_cert.pem"
+            private-key: "server_key.pem"
+
+server:
+  port: 8443
+  ssl:
+    bundle: server
