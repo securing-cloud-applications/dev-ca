@@ -1,30 +1,44 @@
 #!/bin/bash
 
-# Paths for the CA key, certificate, and configuration
-CA_KEY="ca/ca_private_key.pem"
-CA_CERT="ca/ca_cert.pem"
-CA_CONFIG="ca/openssl.cnf"  # Configuration file path
-EXT_FILE="ca/server_extfile.cnf"
+# Define environment variables for paths
+PRIVATE_KEY_PATH="keys/ca_private_key.pem"  # Path to store the CA private key
+CERT_PATH="keys/ca_cert.pem"                # Path to store the CA certificate
+SERVER_KEY_PATH="keys/server_key.pem"          # Path to store the server private key
+SERVER_CSR_PATH="keys/server_csr.pem"          # Path to store the server CSR
+SERVER_CERT_PATH="keys/server_cert.pem"        # Path to store the server certificate
+OPENSSL_CONFIG_PATH="openssl.cnf"      # Path to the OpenSSL configuration file
 
-# Paths for the server key, CSR, and certificate
-SERVER_KEY="server_key.pem"
-SERVER_CSR="server_csr.pem"
-SERVER_CERT="server_cert.pem"
+# Step 1: Create a key pair for the server certificate
+openssl genpkey \
+    -algorithm RSA \
+    -outform PEM \
+    -out ${SERVER_KEY_PATH} # Use RSA algorithm, output in PEM format, save to specified path
 
+# Step 2: Create a certificate signing request (CSR) using the configuration file
+openssl req -new \
+    -key ${SERVER_KEY_PATH} \
+    -out ${SERVER_CSR_PATH} \
+    -config ${OPENSSL_CONFIG_PATH} # Generate CSR with specified key and config file
 
-# Generate the server private key
-openssl genpkey -algorithm RSA -outform PEM -out $SERVER_KEY
+# Step 3: Sign the CSR using the certificate authority certificate created earlier
+openssl x509 -req \
+    -in ${SERVER_CSR_PATH} \
+    -CA ${CERT_PATH} \
+    -CAkey ${PRIVATE_KEY_PATH} \
+    -CAcreateserial \
+    -out ${SERVER_CERT_PATH} \
+    -days 365 \
+    -sha256 \
+    -extensions req_ext \
+    -extfile ${OPENSSL_CONFIG_PATH} # Sign CSR with CA cert and key, specify config file
 
-# Generate the certificate signing request (CSR) using the configuration file
-# CHANGE: Added -config $CA_CONFIG to include SAN in the CSR
-openssl req -new -key $SERVER_KEY -out $SERVER_CSR -config $CA_CONFIG
+# Step 4: Verify the generated server certificate
+openssl verify -CAfile ${CERT_PATH} ${SERVER_CERT_PATH}
 
-# Generate the self-signed certificate with the SAN included
-# CHANGE: Added -extfile $CA_CONFIG to include SAN in the certificate
-openssl x509 -req -in $SERVER_CSR -CA $CA_CERT -CAkey $CA_KEY -CAcreateserial -out $SERVER_CERT -days 365 -sha256 -extensions req_ext -extfile $CA_CONFIG
+# Expected output:
+# server_cert.pem: OK
+# Chain:
+# depth=0: C=CA, ST=Ontario, L=Toronto, O=Adib Saikali, OU=MacBook Pro, CN=localhost (untrusted)
+# depth=1: CN=local-dev CA
 
-# Display the certificate details to verify the SAN is included
-openssl x509 -in $SERVER_CERT -noout -text
-
-openssl x509 -req -in server_csr.pem -signkey server_key.pem -out server_cert.pem -days 365 -extfile <(printf "subjectAltName=DNS:localhost")
-openssl x509 -req -in server_csr.pem -CA ca/ca_cert.pem -CAkey ca/ca_private_key.pem -CAcreateserial -out server_cert.pem -days 365 -sha256 -extensions req_ext -extfiopenssl x509 -req -in server_csr.pem -CA ca/ca_cert.pem -CAkey ca/ca_private_key.pem -CAcreateserial -out server_cert.pem -days 365 -sha256 -extensions req_ext -extfile ca/extension-config.cnf
+echo "Server certificate created and verified successfully."

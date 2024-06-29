@@ -4,8 +4,8 @@ spring:
       pem:
         server:
           keystore:
-            certificate: "server_cert.pem"
-            private-key: "server_key.pem"
+            certificate: "ca/keys/server_cert.pem"
+            private-key: "ca/keys/server_key.pem"
 
 server:
   port: 8443

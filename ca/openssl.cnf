@@ -5,11 +5,10 @@ x509_extensions    = v3_ca
 prompt             = no
 
 [ req_distinguished_name ]
-C            = Canada
+C            = CA
 ST           = Ontario
 L            = Toronto
-O            = Adib Saikali
-OU           = MacBook Pro
+O            = Laptop
 CN           = localhost
 
 [ req_ext ]
