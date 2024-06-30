@@ -13,4 +13,5 @@ subjectAltName = @alt_names
 
 [ alt_names ]
 DNS.1 = localhost       # Primary domain
-DNS.2 = *.localhost     # Wildcard for all subdomains of localhost
+DNS.2 = dev.test        # dev.test domain
+DNS.3 = *.dev.test      # Wildcard for all subdomains of dev.test

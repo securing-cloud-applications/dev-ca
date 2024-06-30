@@ -1,0 +1,10 @@
+#
+# Configuration to use when the application is running behind a proxy, that
+# is terminating SSL connections. The proxy should send the
+# x-forwarded-proto: https header to indicate that the original request was
+# made using HTTPS. This configuration will cause Spring Boot application to
+# consider that the request came in over a secure channel.
+#
+server:
+  forward-headers-strategy: native
+  port: 8080
