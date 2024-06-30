@@ -123,6 +123,53 @@ run the test script
 This script will check the TLS functionality on predefined domains (
 e.g., `localhost`, `dev.test`, etc.) and print the results.
 
+you can use curl to test that everything works with
+
+```shell
+
+curl https://locahost:8443
+curl https://dev.test:8443
+curl https://main.dev.test:8443
+curl https://api.dev.test:8443
+curl https://ui.dev.test:8443
+curl https://auth.dev.test:8443
+```
+
+### Test with Envoy
+
+You can have envoy terminate TLS and forward requests to the spring boot
+application using http and pass the x-forwarded-proto header. Start by 
+shutting down the spring boot application if it is running. Make sure
+that [envoyproxy.io](https://www.envoyproxy.io) is installed by following 
+the setup steps on the envoy [website](https://www.envoyproxy.io).
+
+Run envoy 
+```shell
+envoy -c envoy.yaml
+```
+
+Run the spring boot application 
+```shell
+./mvnw spring-boot:run -Dspring-boot.run.profiles=proxy
+```
+
+run the test script
+```bash
+./ca/test-cert.sh
+```
+
+you can use curl to test that everything works with  
+
+```shell
+
+curl https://locahost:8443
+curl https://dev.test:8443
+curl https://main.dev.test:8443
+curl https://api.dev.test:8443
+curl https://ui.dev.test:8443
+curl https://auth.dev.test:8443
+```
+
 ## Summary
 
 By following these steps, you can manage your CA and server certificates for 
