@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Script to inspect and print details of a server certificate using OpenSSL
+#
+# This script performs the following steps:
+# 1. Defines the path to the server certificate.
+# 2. Checks if the server certificate file exists.
+# 3. If the certificate exists, it uses OpenSSL to print the certificate details in text format.
+# 4. If the certificate does not exist, it outputs an error message and exits.
+#
+# Usage:
+#   ./inspect-cert.sh
+#
+# Note:
+# - Ensure OpenSSL is installed on your system.
+# - The script assumes the server certificate is available at the specified path.
+
 # Define the path to the server certificate
 CERT_PATH="keys/server_cert.pem"
 

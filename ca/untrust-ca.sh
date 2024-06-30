@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Script to remove a Certificate Authority (CA) certificate from the trusted store on macOS or Linux
+#
+# This script performs the following steps:
+# 1. Defines environment variables for the path to the CA certificate and the common name of the certificate.
+# 2. Defines a function to remove the CA certificate from the macOS trusted store.
+# 3. Defines a function to remove the CA certificate from the Linux trusted store.
+# 4. Detects the operating system (OS) and removes the CA certificate from the appropriate trusted store.
+#
+# Usage:
+#   ./untrust-ca.sh
+#
+# Note:
+# - Ensure you have the necessary permissions to remove certificates from the trusted store.
+# - The script will remove the CA certificate from the trusted store based on the detected OS.
+
 # Define environment variables for paths
 CERT_PATH="keys/ca_cert.pem"  # Path to the CA certificate
 CERT_NAME="local-dev CA"      # Common name of the certificate

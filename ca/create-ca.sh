@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Script to generate a Certificate Authority (CA) certificate using OpenSSL
+#
+# This script performs the following steps:
+# 1. Defines environment variables for paths where the private key and certificate will be stored.
+# 2. Generates a key pair to use as the private key for the certificate authority.
+# 3. Converts the generated key pair into a certificate authority certificate, valid for 10 years.
+# 4. Inspects the generated certificate authority certificate to ensure it was created correctly.
+#
+# Usage:
+#   ./create-ca.sh
+#
+# Note:
+# - Ensure OpenSSL is installed on your system.
+# - The script will create the key and certificate files in the specified paths.
+
 # Define environment variables for paths
 PRIVATE_KEY_PATH="keys/ca_private_key.pem"  # Path to store the private key
 CERT_PATH="keys/ca_cert.pem"                # Path to store the certificate

@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Script to add a Certificate Authority (CA) certificate to the trusted store on macOS or Linux
+#
+# This script performs the following steps:
+# 1. Defines environment variables for the path to the CA certificate.
+# 2. Defines a function to add the CA certificate to the macOS trusted store.
+# 3. Defines a function to add the CA certificate to the Linux trusted store.
+# 4. Detects the operating system (OS) and adds the CA certificate to the appropriate trusted store.
+#
+# Usage:
+#   ./trust-ca.sh
+#
+# Note:
+# - Ensure you have the necessary permissions to add certificates to the trusted store.
+# - The script will add the CA certificate to the trusted store based on the detected OS.
+
 # Define environment variables for paths
 CERT_PATH="keys/ca_cert.pem"  # Path to the CA certificate
 
