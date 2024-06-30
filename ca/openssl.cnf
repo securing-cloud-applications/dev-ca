@@ -6,10 +6,10 @@ req_extensions     = req_ext
 prompt             = no
 
 [ req_distinguished_name ]
-C  = CA           # Country Name
-ST = Ontario      # State or Province Name
-L  = Toronto      # Locality Name
-O  = Laptop       # Organization Name
+C  = CA           # Country Name (optional, can be omitted)
+ST = Ontario      # State or Province Name (optional, can be omitted)
+L  = Toronto      # Locality Name (optional, can be omitted)
+O  = Laptop       # Organization Name (optional, can be omitted)
 CN = *.localhost  # Common Name (Wildcard for localhost)
 
 [ req_ext ]
@@ -17,4 +17,4 @@ subjectAltName = @alt_names
 
 [ alt_names ]
 DNS.1 = localhost       # Primary domain
-DNS.2 = *.api.localhost     # Wildcard domain
+DNS.2 = *.api.localhost # Wildcard domain
