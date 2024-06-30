@@ -117,7 +117,7 @@ the appropriate trusted store.
 
 ## Summary
 
-By following these steps, you can manage your CA and server certificates
-effectively, ensuring secure communication for your applications. These scripts
+By following these steps, you can manage your CA and server certificates for 
+local development, making local development look more like production. These scripts
 streamline the process of creating, inspecting, trusting, and untrusting
 certificates, making it easier to maintain a secure environment.
