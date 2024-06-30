@@ -27,14 +27,16 @@ each script and a step-by-step tutorial on how to use them.
    macOS, Linux
 6. **ca/test-cert.sh**: Checks the TLS functionality of specified domains.
 
-### Step-by-Step Tutorial
+## Step-by-Step Tutorial
 
-#### Prerequisites
+### Prerequisites
 
 - Ensure you have OpenSSL installed on your system.
 - For macOS and Linux, you need administrator or superuser privileges to add or
   remove certificates from the trusted store.
 - For Windows, you need to have WSL2 installed and configured.
+
+### Create the CA and make it trusted on the host machine
 
 #### Step 1: Generate a CA Certificate
 
@@ -43,11 +45,35 @@ First, generate a CA certificate that will be used to sign server certificates.
 ```bash
 ./ca/create-ca.sh
 ```
-
 This script will create a private key and a CA certificate and store them in
 the `ca/keys` directory.
 
-#### Step 2: Generate a Server Certificate
+#### Step 2: Trust the CA Certificate
+
+If you have completed this step before, you might want to remove 
+previous version of the certificate authority from your system. Run the
+command.
+
+```bash
+./ca/untrust-ca.sh
+```
+
+This script will detect your operating system and remove the CA certificate 
+from the appropriate trusted store.
+
+Add the CA certificate to the trusted store on your system.
+
+```bash
+./ca/trust-ca.sh
+```
+
+This script will detect your operating system and add the CA certificate to the
+appropriate trusted store.
+
+
+### Generate a Server Certificate 
+
+#### Step 3: Generate a Server Certificate
 
 Next, generate a server certificate signed by the CA.
 
@@ -59,7 +85,7 @@ This script will create a private key for the server, generate a certificate
 signing request (CSR), and then sign it with the CA certificate. The server
 certificate and key will be stored in the `ca/keys` directory.
 
-#### Step 3: Inspect the Server Certificate
+#### Step 4: Inspect the Server Certificate
 
 To ensure the server certificate was created correctly, inspect its details.
 
@@ -69,18 +95,9 @@ To ensure the server certificate was created correctly, inspect its details.
 
 This script will print the details of the server certificate.
 
-#### Step 4: Trust the CA Certificate
+### Test the Server Functionality
 
-Add the CA certificate to the trusted store on your system.
-
-```bash
-./ca/trust-ca.sh
-```
-
-This script will detect your operating system and add the CA certificate to the
-appropriate trusted store.
-
-#### Step 5: Test TLS Functionality
+#### Step 5: Updates `hosts` file
 
 Run the Spring Boot Application then  Verify that TLS is working on 
 specified domains. To make testing easier you need to add a bunch of 
@@ -91,29 +108,20 @@ entries to `/etc/hosts` file so that `*.dev.test` domain is mapped to
 ./ca/append-hosts.sh
 ```
 
-then run the spring boot app using
+#### Step 6: Run the application 
+
+run the spring boot app using
 ```bash
 ./mvnw spring-boot:run
 ```
+#### Step 7: Check that the TLS is working and trusted 
 
-then run the test script 
+run the test script 
 ```bash
 ./ca/test-cert.sh
 ```
 This script will check the TLS functionality on predefined domains (
 e.g., `localhost`, `dev.test`, etc.) and print the results.
-
-#### Step 6: Untrust the CA Certificate
-
-If you need to remove the CA certificate from the trusted store, use the
-following script.
-
-```bash
-./ca/untrust-ca.sh
-```
-
-This script will detect your operating system and remove the CA certificate from
-the appropriate trusted store.
 
 ## Summary
 
