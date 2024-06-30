@@ -15,8 +15,9 @@
 # - Ensure OpenSSL is installed on your system.
 # - The script assumes the server certificate is available at the specified path.
 
-# Define the path to the server certificate
-CERT_PATH="keys/server_cert.pem"
+# Define the path to the server certificate relative to the script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CERT_PATH="${SCRIPT_DIR}/keys/server_cert.pem"
 
 # Function to inspect the certificate and print details
 inspect_cert() {

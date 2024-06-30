@@ -15,29 +15,33 @@
 # - Ensure OpenSSL is installed on your system.
 # - The script will create the key and certificate files in the specified paths.
 
-# Define environment variables for paths
-PRIVATE_KEY_PATH="keys/ca_private_key.pem"  # Path to store the private key
-CERT_PATH="keys/ca_cert.pem"                # Path to store the certificate
+# Define environment variables for paths relative to the script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PRIVATE_KEY_PATH="${SCRIPT_DIR}/keys/ca_private_key.pem"  # Path to store the private key
+CERT_PATH="${SCRIPT_DIR}/keys/ca_cert.pem"                # Path to store the certificate
+
+# Ensure the keys directory exists
+mkdir -p "${SCRIPT_DIR}/keys"
 
 # Step 1: Generate a key pair to use as the private key of the certificate authority
 # Use RSA algorithm, output in PEM format, save to specified path
 openssl genpkey \
     -algorithm RSA \
     -outform PEM \
-    -out ${PRIVATE_KEY_PATH}
+    -out "${PRIVATE_KEY_PATH}"
 
 # Step 2: Turn the key pair into a certificate authority certificate valid for 10 years
 # New certificate, use generated key, set validity to 10 years, save to specified path, set subject field
 openssl req -x509 \
     -new \
-    -key ${PRIVATE_KEY_PATH} \
+    -key "${PRIVATE_KEY_PATH}" \
     -days 3650 \
-    -out ${CERT_PATH} \
+    -out "${CERT_PATH}" \
     -subj "/CN=local-dev CA"
 
 # Step 3: Inspect the generated certificate authority certificate
 # Input the certificate, do not output encoded version, output in text format
 openssl x509 \
-    -in ${CERT_PATH} \
+    -in "${CERT_PATH}" \
     -noout \
     -text

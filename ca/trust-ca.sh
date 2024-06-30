@@ -15,8 +15,9 @@
 # - Ensure you have the necessary permissions to add certificates to the trusted store.
 # - The script will add the CA certificate to the trusted store based on the detected OS.
 
-# Define environment variables for paths
-CERT_PATH="keys/ca_cert.pem"  # Path to the CA certificate
+# Define environment variables for paths relative to the script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CERT_PATH="${SCRIPT_DIR}/keys/ca_cert.pem"  # Path to the CA certificate
 
 # Function to add the certificate to the macOS trusted store
 add_cert_to_macos_store() {

@@ -15,9 +15,10 @@
 # - Ensure you have the necessary permissions to remove certificates from the trusted store.
 # - The script will remove the CA certificate from the trusted store based on the detected OS.
 
-# Define environment variables for paths
-CERT_PATH="keys/ca_cert.pem"  # Path to the CA certificate
-CERT_NAME="local-dev CA"      # Common name of the certificate
+# Define environment variables for paths relative to the script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CERT_PATH="${SCRIPT_DIR}/keys/ca_cert.pem"  # Path to the CA certificate
+CERT_NAME="local-dev CA"                    # Common name of the certificate
 
 # Function to remove the certificate from the macOS trusted store
 remove_cert_from_macos_store() {
