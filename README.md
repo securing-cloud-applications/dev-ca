@@ -176,3 +176,6 @@ By following these steps, you can manage your CA and server certificates for
 local development, making local development look more like production. These scripts
 streamline the process of creating, inspecting, trusting, and untrusting
 certificates, making it easier to maintain a secure environment.
+
+# Resources 
+[Protocol Names](https://docs.oracle.com/en/java/javase/21/docs/specs/security/standard-names.html#protocols)

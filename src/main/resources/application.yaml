@@ -8,13 +8,28 @@ spring:
       on-profile: "!proxy"
   ssl:
     bundle:
+      watch:
+        file:
+          quiet-period: 10s
       pem:
         server:
+          options:
+             # Legal protocol values are in https://docs.oracle.com/en/java/javase/21/docs/specs/security/standard-names.html#protocols
+             enabled-protocols:
+              # - TLSv1.2
+               - TLSv1.3
+           # https://docs.oracle.com/en/java/javase/21/docs/specs/security/standard-names.html#jsse-cipher-suite-names
+           # ciphers:
+
+          reload-on-update: true
           keystore:
             certificate: "ca/keys/server_cert.pem"
             private-key: "ca/keys/server_key.pem"
+
 
 server:
   port: 8443
   ssl:
     bundle: server
+
+
