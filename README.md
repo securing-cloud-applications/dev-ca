@@ -213,7 +213,95 @@ accept: */*
 
 ### Test with Handshake debugging
 
--Djavax.net.debug=ssl,handshake
+If you want to see the details of the TLS handshake you can turn on TLS
+handsake debbuing on the JVW by running the extra options 
+`-Djavax.net.debug=ssl,handshake` for a spring boot application use 
+
+```shell
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Djavax.net.debug=ssl,handshake"
+```
+
+Then run a curl to the app using 
+```shell
+curl -v --tls-max 1.3 https://localhost:8443 
+```
+
+You will see output on the console of the spring boot application with the 
+details of the TLS handshake.
+
+Client hello 
+```text
+javax.net.ssl|DEBUG|82|https-jsse-nio-8443-exec-1|2024-07-03 01:24:07.629 CEST|ClientHello.java:796|Consuming ClientHello handshake message (
+"ClientHello": {
+"client version"      : "TLSv1.2",
+"random"              : "FB919A650B2B23A11EA8D360123ECFD910140CCC29483E11644908D2AE37B12D",
+"session id"          : "62DA00C3DB6E9108AC35F6F3453F585920F86CBCF2AE9BF6A2D6EFCC66011D61",
+"cipher suites"       : "[TLS_CHACHA20_POLY1305_SHA256(0x1303), TLS_AES_256_GCM_SHA384(0x1302), TLS_AES_128_GCM_SHA256(0x1301), TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9), TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8), TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCAA), TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384(0xC030), TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384(0xC02C), TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384(0xC028), TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384(0xC024), TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA(0xC014), TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA(0xC00A), TLS_DHE_RSA_WITH_AES_256_GCM_SHA384(0x009F), TLS_DHE_RSA_WITH_AES_256_CBC_SHA256(0x006B), TLS_DHE_RSA_WITH_AES_256_CBC_SHA(0x0039), UNKNOWN-CIPHER-SUITE(0xFF85)(0xFF85), TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256(0x00C4), TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA(0x0088), UNKNOWN-CIPHER-SUITE(0x0081)(0x0081), TLS_RSA_WITH_AES_256_GCM_SHA384(0x009D), TLS_RSA_WITH_AES_256_CBC_SHA256(0x003D), TLS_RSA_WITH_AES_256_CBC_SHA(0x0035), TLS_RSA_WITH_CAMELLIA_256_CBC_SHA256(0x00C0), TLS_RSA_WITH_CAMELLIA_256_CBC_SHA(0x0084), TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256(0xC02F), TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256(0xC02B), TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256(0xC027), TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256(0xC023), TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA(0xC013), TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA(0xC009), TLS_DHE_RSA_WITH_AES_128_GCM_SHA256(0x009E), TLS_DHE_RSA_WITH_AES_128_CBC_SHA256(0x0067), TLS_DHE_RSA_WITH_AES_128_CBC_SHA(0x0033), TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256(0x00BE), TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA(0x0045), TLS_RSA_WITH_AES_128_GCM_SHA256(0x009C), TLS_RSA_WITH_AES_128_CBC_SHA256(0x003C), TLS_RSA_WITH_AES_128_CBC_SHA(0x002F), TLS_RSA_WITH_CAMELLIA_128_CBC_SHA256(0x00BA), TLS_RSA_WITH_CAMELLIA_128_CBC_SHA(0x0041), TLS_ECDHE_RSA_WITH_RC4_128_SHA(0xC011), TLS_ECDHE_ECDSA_WITH_RC4_128_SHA(0xC007), SSL_RSA_WITH_RC4_128_SHA(0x0005), SSL_RSA_WITH_RC4_128_MD5(0x0004), TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA(0xC012), TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA(0xC008), SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA(0x0016), SSL_RSA_WITH_3DES_EDE_CBC_SHA(0x000A), TLS_EMPTY_RENEGOTIATION_INFO_SCSV(0x00FF)]",
+"compression methods" : "00",
+"extensions"          : [
+"supported_versions (43)": {
+"versions": [TLSv1.3, TLSv1.2, TLSv1.1, TLSv1]
+},
+"key_share (51)": {
+"client_shares": [  
+{
+"named group": x25519
+"key_exchange": {
+0000: 34 A3 8B 38 3B 1E 54 F9   0E 3B D7 66 51 35 97 4E  4..8;.T..;.fQ5.N
+0010: 38 8B 77 85 BD 3E 30 79   C9 2C 9D 5B C3 1E 90 30  8.w..>0y.,.[...0
+}
+},
+]
+},
+"server_name (0)": {
+type=host_name (0), value=localhost
+},
+"ec_point_formats (11)": {
+"formats": [uncompressed]
+},
+"supported_groups (10)": {
+"named groups": [x25519, secp256r1, secp384r1, secp521r1]
+},
+"signature_algorithms (13)": {
+"signature schemes": [rsa_pss_rsae_sha512, rsa_pkcs1_sha512, ecdsa_secp521r1_sha512, rsa_pss_rsae_sha384, rsa_pkcs1_sha384, ecdsa_secp384r1_sha384, rsa_pss_rsae_sha256, rsa_pkcs1_sha256, ecdsa_secp256r1_sha256, rsa_pkcs1_sha1, ecdsa_sha1]
+},
+"application_layer_protocol_negotiation (16)": {
+[h2, http/1.1]
+}
+]
+}
+)
+```
+
+The server hello 
+```text
+javax.net.ssl|DEBUG|82|https-jsse-nio-8443-exec-1|2024-07-03 01:24:07.637 CEST|ServerHello.java:581|Produced ServerHello handshake message (
+"ServerHello": {
+"server version"      : "TLSv1.2",
+"random"              : "04AF8EEA0F925E7E7D35768C582E8A2380F3676ADDCEF36CF819867B85A172F5",
+"session id"          : "62DA00C3DB6E9108AC35F6F3453F585920F86CBCF2AE9BF6A2D6EFCC66011D61",
+"cipher suite"        : "TLS_CHACHA20_POLY1305_SHA256(0x1303)",
+"compression methods" : "00",
+"extensions"          : [
+"supported_versions (43)": {
+"selected version": [TLSv1.3]
+},
+"key_share (51)": {
+"server_share": {
+"named group": x25519
+"key_exchange": {
+0000: 51 B3 B2 A6 DC FC E0 4A   B5 31 77 3B AE 78 C1 50  Q......J.1w;.x.P
+0010: 80 D3 0D FD FF C7 65 94   7E 0F 8F FB A8 15 D7 65  ......e........e
+}
+},
+}
+]
+}
+)
+```
+
+A bunch of the output has been removed for brevity, the key thing to notice is 
+the client hello indicated that the client understands `"versions": [TLSv1.3, TLSv1.2, TLSv1.1, TLSv1]` and the server responded with `"selected version": [TLSv1.3]`
 
 ### Test with Envoy
 
