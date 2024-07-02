@@ -18,9 +18,20 @@ spring:
              enabled-protocols:
               # - TLSv1.2
                - TLSv1.3
-           # https://docs.oracle.com/en/java/javase/21/docs/specs/security/standard-names.html#jsse-cipher-suite-names
-           # ciphers:
-
+             # https://docs.oracle.com/en/java/javase/21/docs/specs/security/standard-names.html#jsse-cipher-suite-names
+             # recommmeded list https://developers.cloudflare.com/ssl/reference/cipher-suites/recommendations/
+             ciphers:
+               # TLS 1.3 cipher suite names
+               - TLS_AES_128_GCM_SHA256
+               - TLS_AES_256_GCM_SHA384
+               - TLS_CHACHA20_POLY1305_SHA256
+# TLS 1.2 cipher suite names
+#               - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+#               - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+#               - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+#               - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+#               - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+#               - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           reload-on-update: true
           keystore:
             certificate: "ca/keys/server_cert.pem"
@@ -31,5 +42,5 @@ server:
   port: 8443
   ssl:
     bundle: server
-
+    debug: true
 

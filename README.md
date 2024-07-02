@@ -211,6 +211,9 @@ accept: */*
 * Connection #0 to host localhost left intact
 ```
 
+### Test with Handshake debugging
+
+-Djavax.net.debug=ssl,handshake
 
 ### Test with Envoy
 

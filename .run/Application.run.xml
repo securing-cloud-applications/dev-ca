@@ -2,6 +2,7 @@
   <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <module name="dev-ca" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.Application" />
+    <option name="VM_PARAMETERS" value="-Djavax.net.debug=ssl,handshake" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.example.*" />
