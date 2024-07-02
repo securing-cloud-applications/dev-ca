@@ -42,5 +42,4 @@ server:
   port: 8443
   ssl:
     bundle: server
-    debug: true
 
