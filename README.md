@@ -135,6 +135,83 @@ curl https://ui.dev.test:8443
 curl https://auth.dev.test:8443
 ```
 
+The Spring Boot Application is configured to only work with TLSv1.3 so lets try
+making a cur request set maximum allowed TLS version ot 1.2 we should get an 
+error.
+
+```shell
+curl -v --tls-max 1.2 https://localhost:8443 
+```
+
+You will get an error message indicating a protocol mismatch 
+```text
+ Host localhost:8443 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8443...
+* Connected to localhost (::1) port 8443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+*  CAfile: /etc/ssl/cert.pem
+*  CApath: none
+* LibreSSL/3.3.6: error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version
+* Closing connection
+curl: (35) LibreSSL/3.3.6: error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version
+```
+
+Let's now try with TLSv1.3 
+```shell
+curl -v --tls-max 1.3 https://localhost:8443 
+```
+
+It will work, notice that the protocol version that is negotiated is version 1.3
+```text
+curl -v --tls-max 1.3 https://localhost:8443 
+* Host localhost:8443 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8443...
+* Connected to localhost (::1) port 8443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+*  CAfile: /etc/ssl/cert.pem
+*  CApath: none
+* (304) (IN), TLS handshake, Server hello (2):
+* (304) (IN), TLS handshake, Unknown (8):
+* (304) (IN), TLS handshake, Certificate (11):
+* (304) (IN), TLS handshake, CERT verify (15):
+* (304) (IN), TLS handshake, Finished (20):
+* (304) (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / AEAD-CHACHA20-POLY1305-SHA256 / [blank] / UNDEF
+* ALPN: server did not agree on a protocol. Uses default.
+* Server certificate:
+*  subject: CN=localhost
+*  start date: Jul  2 21:01:18 2024 GMT
+*  expire date: Jul  2 21:01:18 2025 GMT
+*  subjectAltName: host "localhost" matched cert's "localhost"
+*  issuer: CN=local-dev CA
+*  SSL certificate verify ok.
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: localhost:8443
+> User-Agent: curl/8.6.0
+> Accept: */*
+> 
+< HTTP/1.1 200 
+< Content-Type: text/plain;charset=UTF-8
+< Content-Length: 139
+< Date: Tue, 02 Jul 2024 21:35:42 GMT
+< 
+Hello time is: 2024-07-02T23:35:42.529024
+Connection is secure: true
+HTTP Headers:
+host: localhost:8443
+user-agent: curl/8.6.0
+accept: */*
+* Connection #0 to host localhost left intact
+```
+
+
 ### Test with Envoy
 
 You can have envoy terminate TLS and forward requests to the spring boot
@@ -179,3 +256,5 @@ certificates, making it easier to maintain a secure environment.
 
 # Resources 
 [Protocol Names](https://docs.oracle.com/en/java/javase/21/docs/specs/security/standard-names.html#protocols)
+[Cipher Suite Names](https://docs.oracle.com/en/java/javase/21/docs/specs/security/standard-names.html#jsse-cipher-suite-names)
+
