@@ -303,6 +303,71 @@ javax.net.ssl|DEBUG|82|https-jsse-nio-8443-exec-1|2024-07-03 01:24:07.637 CEST|S
 A bunch of the output has been removed for brevity, the key thing to notice is 
 the client hello indicated that the client understands `"versions": [TLSv1.3, TLSv1.2, TLSv1.1, TLSv1]` and the server responded with `"selected version": [TLSv1.3]`
 
+### Hot Reloading of Certificates
+
+Spring Boot has the ability to watch the filesystem and reload certificates when 
+they are modified, without restarting the application. It does this by launching
+a background thread that watches the filesystem for new versions of the TLS 
+certificates. Let's test this feature.
+
+Start by creating a new server certificaet valid for only 1 day. 
+
+```shell
+./ca/create-cert.sh 1
+```
+Inspect the certificate and validate that it in fact it expires in 1 day.
+
+```shell
+./ca/inspect-cert.sh
+```
+
+Run the application 
+
+```shell
+mvn spring-boot:run
+```
+
+Make a request to the application 
+
+```shell
+curl -v https://localhost:8443
+```
+The curl output should include the expiry date of the certificate
+
+```text
+*  start date: Jul  3 00:11:36 2024 GMT
+*  expire date: Jul  4 00:11:36 2024 GMT
+```
+
+Let`s create a new version of the certificate that is valid for 1 year.
+
+```shell
+./ca/create-cert.sh 
+```
+
+After 10 seconds check the console log of the spring boot application you will
+see a message similar to the one below, indicating that a hot TLS reload has 
+taken place.
+
+```text
+2024-07-03T02:06:53.041+02:00  INFO 36895 --- [-bundle-watcher] o.a.t.util.net.NioEndpoint.certificate   : Connector [https-jsse-nio-8443], TLS virtual host [_default_], certificate type [UNDEFINED] configured from keystore [/Users/adib/.keystore] using alias [tomcat] with trust store [null]
+```
+
+Try the curl command again
+
+```shell
+curl -v https://localhost:8443
+```
+
+You should see the new expiry dates in the curl output. if you don't wait a few seconds and try 
+again.
+
+```text
+*  start date: Jul  3 00:12:34 2024 GMT
+*  expire date: Jul  3 00:12:34 2025 GMT
+```
+
+
 ### Test with Envoy
 
 You can have envoy terminate TLS and forward requests to the spring boot

@@ -10,12 +10,20 @@
 # 5. Verifies the generated server certificate to ensure it was created correctly.
 #
 # Usage:
-#   ./create-cert.sh
+#   ./create-cert.sh [expiry_days]
+#   expiry_days: Optional, default 365. Number of days until the certificate expires.
 #
 # Note:
 # - Ensure OpenSSL is installed on your system.
 # - The script assumes the CA's private key and certificate are already generated and available at the specified paths.
 # - The script will create the server key, CSR, and certificate files in the specified paths.
+
+# Handle command-line arguments
+if [[ -n $1 && $1 =~ ^[0-9]+$ ]]; then
+    EXPIRY_DAYS=$1
+else
+    EXPIRY_DAYS=365
+fi
 
 # Define environment variables for paths relative to the script location
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -47,10 +55,10 @@ openssl x509 -req \
     -CA "${CERT_PATH}" \
     -CAkey "${PRIVATE_KEY_PATH}" \
     -out "${SERVER_CERT_PATH}" \
-    -days 365 \
+    -days "$EXPIRY_DAYS" \
     -sha256 \
     -extensions req_ext \
-    -extfile "${OPENSSL_CONFIG_PATH}"  # Sign CSR with CA cert and key, specify config file
+    -extfile "${OPENSSL_CONFIG_PATH}"  # Sign CSR with CA cert and key, specify config file and expiry
 
 # Step 4: Verify the generated server certificate
 openssl verify -CAfile "${CERT_PATH}" "${SERVER_CERT_PATH}"
