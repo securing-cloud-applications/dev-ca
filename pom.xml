@@ -51,9 +51,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-<!--                <configuration>-->
-<!--                    <jvmArguments>-Djavax.net.debug=ssl,handshake</jvmArguments>-->
-<!--                </configuration>-->
+                <configuration>
+                    <jvmArguments>-Djavax.net.debug=ssl,handshake</jvmArguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>process-aot</id>
+                        <goals>
+                            <goal>process-aot</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
