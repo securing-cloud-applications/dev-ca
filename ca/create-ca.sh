@@ -9,11 +9,20 @@
 # 4. Inspects the generated certificate authority certificate to ensure it was created correctly.
 #
 # Usage:
-#   ./create-ca.sh
+#   ./create-ca.sh [rsa|ec]
 #
 # Note:
 # - Ensure OpenSSL is installed on your system.
 # - The script will create the key and certificate files in the specified paths.
+# - Default algorithm is EC if no argument is provided.
+
+# Default algorithm
+ALGORITHM="ec"
+
+# Check for algorithm argument
+if [[ "$1" == "rsa" ]]; then
+  ALGORITHM="rsa"
+fi
 
 # Define environment variables for paths relative to the script location
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,11 +33,20 @@ CERT_PATH="${SCRIPT_DIR}/keys/ca_cert.pem"                # Path to store the ce
 mkdir -p "${SCRIPT_DIR}/keys"
 
 # Step 1: Generate a key pair to use as the private key of the certificate authority
-# Use RSA algorithm, output in PEM format, save to specified path
-openssl genpkey \
-    -algorithm RSA \
-    -outform PEM \
-    -out "${PRIVATE_KEY_PATH}"
+if [[ "$ALGORITHM" == "rsa" ]]; then
+  # Use RSA algorithm, output in PEM format, save to specified path
+  openssl genpkey \
+      -algorithm RSA \
+      -outform PEM \
+      -out "${PRIVATE_KEY_PATH}"
+else
+  # Use EC algorithm, output in PEM format, save to specified path
+  openssl ecparam \
+      -name prime256v1 \
+      -genkey \
+      -noout \
+      -out "${PRIVATE_KEY_PATH}"
+fi
 
 # Step 2: Turn the key pair into a certificate authority certificate valid for 10 years
 # New certificate, use generated key, set validity to 10 years, save to specified path, set subject field
@@ -45,3 +63,5 @@ openssl x509 \
     -in "${CERT_PATH}" \
     -noout \
     -text
+
+echo "CA certificate generated successfully using ${ALGORITHM} algorithm."

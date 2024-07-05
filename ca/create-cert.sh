@@ -10,20 +10,47 @@
 # 5. Verifies the generated server certificate to ensure it was created correctly.
 #
 # Usage:
-#   ./create-cert.sh [expiry_days]
-#   expiry_days: Optional, default 365. Number of days until the certificate expires.
+#   ./create-cert.sh [-a rsa|ec] [-d expiry_days]
+#   -a rsa|ec: Optional, default ec. Algorithm to use for the server key.
+#   -d expiry_days: Optional, default 365. Number of days until the certificate expires.
 #
 # Note:
 # - Ensure OpenSSL is installed on your system.
 # - The script assumes the CA's private key and certificate are already generated and available at the specified paths.
 # - The script will create the server key, CSR, and certificate files in the specified paths.
 
-# Handle command-line arguments
-if [[ -n $1 && $1 =~ ^[0-9]+$ ]]; then
-    EXPIRY_DAYS=$1
-else
-    EXPIRY_DAYS=365
-fi
+# Default values
+ALGORITHM="ec"
+EXPIRY_DAYS=365
+
+# Parse command-line arguments
+while getopts ":a:d:" opt; do
+  case $opt in
+    a)
+      ALGORITHM=$OPTARG
+      if [[ "$ALGORITHM" != "rsa" && "$ALGORITHM" != "ec" ]]; then
+        echo "Invalid algorithm specified. Use 'rsa' or 'ec'."
+        exit 1
+      fi
+      ;;
+    d)
+      if [[ $OPTARG =~ ^[0-9]+$ ]]; then
+        EXPIRY_DAYS=$OPTARG
+      else
+        echo "Invalid expiry days specified. Use a positive integer."
+        exit 1
+      fi
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG"
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument."
+      exit 1
+      ;;
+  esac
+done
 
 # Define environment variables for paths relative to the script location
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -38,10 +65,18 @@ OPENSSL_CONFIG_PATH="${SCRIPT_DIR}/openssl.cnf"           # Path to the OpenSSL 
 mkdir -p "${SCRIPT_DIR}/keys"
 
 # Step 1: Create a key pair for the server certificate
-openssl genpkey \
-    -algorithm RSA \
-    -outform PEM \
-    -out "${SERVER_KEY_PATH}"  # Use RSA algorithm, output in PEM format, save to specified path
+if [[ "$ALGORITHM" == "rsa" ]]; then
+    openssl genpkey \
+        -algorithm RSA \
+        -outform PEM \
+        -out "${SERVER_KEY_PATH}"  # Use RSA algorithm, output in PEM format, save to specified path
+else
+    openssl ecparam \
+        -name prime256v1 \
+        -genkey \
+        -noout \
+        -out "${SERVER_KEY_PATH}"  # Use EC algorithm, output in PEM format, save to specified path
+fi
 
 # Step 2: Create a certificate signing request (CSR) using the configuration file
 openssl req -new \
@@ -62,4 +97,4 @@ openssl x509 -req \
 
 # Step 4: Verify the generated server certificate
 openssl verify -CAfile "${CERT_PATH}" "${SERVER_CERT_PATH}"
-echo "Server certificate created and verified successfully."
+echo "Server certificate created and verified successfully using ${ALGORITHM} algorithm for ${EXPIRY_DAYS} days."
